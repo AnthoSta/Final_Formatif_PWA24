@@ -10,12 +10,13 @@ namespace WebAPI.Controllers
     [ApiController]
     public class SeatsController(SeatsService service) : ControllerBase
     {
-        public virtual string? UserId => User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        public virtual string UserId { get { return User.FindFirstValue(ClaimTypes.NameIdentifier)!; } }
 
         // POST: api/Seats/4
         [HttpGet("{seatNumber:int}")]
         public ActionResult<Seat> ReserveSeat(int seatNumber)
         {
+            
             try
             {
                 Seat seat = service.ReserveSeat(UserId!, seatNumber);
