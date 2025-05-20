@@ -83,17 +83,17 @@ namespace BackgroundServiceVote.Services
                     var userData = _data[userId];
                     // TODO: Notifier les clients pour les bonnes et mauvaises réponses
                     // TODO: Modifier et sauvegarder le NbRightAnswers des joueurs qui ont la bonne réponse
+                    Player player = await dbContext.Player.Where(p => p.UserId == userId).Include(p => p.User).FirstAsync();
                     if (userData.Choice == _currentQuestion!.RightAnswerIndex)
                     {
-                        Player player = await dbContext.Player.Where(p => p.UserId == userId).FirstAsync();
+                        
                         player.NbRightAnswers++;
                         await dbContext.SaveChangesAsync();
-                        await _mathQuestionHub.Clients.Client(userId).SendAsync("BonneReponse");
+                        
+
                     }
-                    else
-                    {
-                        await _mathQuestionHub.Clients.Client(userId).SendAsync("MauvaiseReponse", _currentQuestion.Answers[_currentQuestion.RightAnswerIndex]);
-                    }
+                    await _mathQuestionHub.Clients.All.SendAsync("Reponse", _currentQuestion.Answers[_currentQuestion.RightAnswerIndex], player.User.UserName);
+                    //await _mathQuestionHub.Clients.User(userId).SendAsync("MauvaiseReponse", _currentQuestion.Answers[_currentQuestion.RightAnswerIndex]);
 
                 }
                 // Reset

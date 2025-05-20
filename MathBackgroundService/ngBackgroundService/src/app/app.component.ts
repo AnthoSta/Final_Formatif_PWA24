@@ -111,16 +111,17 @@ export class AppComponent {
       });
     });
 
-    this.hubConnection.on('MauvaiseReponse', (rightAnswer:number) => {
+    this.hubConnection.on('Reponse', (rightAnswer:number, username_:string) => {
       this.zone.run(() => {
-        alert("Mauvaise réponse ! La bonne réponse était " + rightAnswer)
-      });
-    });
-
-    this.hubConnection.on('BonneReponse', () => {
-      this.zone.run(() => {
-        alert("Bonne réponse !")
-        this.nbRightAnswers++
+        console.log(rightAnswer)
+        console.log(username_)
+        if(this.currentQuestion?.answers[this.selection] == rightAnswer && this.account.username == username_){
+          alert("Bonne réponse !")
+          this.nbRightAnswers++
+        }
+        else if (this.account.username == username_){
+          alert("Mauvaise réponse ! La bonne réponse était " + rightAnswer)
+        }
       });
     });
 
